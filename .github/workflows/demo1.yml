@@ -1,0 +1,35 @@
+name: Deploy index.html to EC2
+
+on:
+  push:
+    branches:
+      - main   # sirf main branch pe push hone par chalega
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        # ye tumhare repo ka code (index.html) runner me clone karega
+
+      - name: Copy index.html to EC2
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          source: "index.html"
+          target: "/var/www/html/"
+        # ye index.html ko EC2 server ke /var/www/html/ me bhej dega
+
+      - name: Restart Apache (optional)
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            sudo systemctl restart apache2
+        # apache restart kar dega taki changes reflect ho
