@@ -35,6 +35,7 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           source: "deploy/*"
           target: "/var/www/html"
+          strip_components: 1
           overwrite: true
 
       # Step 4: Restart apache
