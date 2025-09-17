@@ -11,15 +11,24 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      # Step 1: make a temp folder and copy only required files
+      - name: Prepare deployment package
+        run: |
+          mkdir deploy
+          cp index.html deploy/
+          cp styles.css deploy/
+
+      # Step 2: Upload only that folder
       - uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          source: "{index.html,styles.css}"
+          source: "deploy/*"
           target: "/var/www/html/"
           overwrite: true
 
+      # Step 3: Restart apache
       - uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_HOST }}
