@@ -26,7 +26,6 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             sudo rm -rf /var/www/html/*
-            sudo mkdir -p /var/www/html
 
       # Step 3: Upload new files (only contents of deploy/, not the folder itself)
       - uses: appleboy/scp-action@v0.1.7
